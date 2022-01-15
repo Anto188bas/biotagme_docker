@@ -1,6 +1,8 @@
 # biotagme_docker
 docker for biotagme gui
 
+The gui is available at: http://biotagme.adimaria.site
+
 Installation:
  - clone the repository
  - create the directory site under Nginx one:
