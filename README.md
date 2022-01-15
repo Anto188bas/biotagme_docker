@@ -21,3 +21,15 @@ Installation:
         
        cd /data
        mysql -u biouser -p Biotagme < dump.sql
+       
+ - exit from the previous container and access to neo4j one. then run the following command:
+        
+        cd data
+        rm -r *
+        cd ..
+        bin/neo4j-admin import --database='biotagme' --delimiter='\t' --nodes=import/Nodes.csv --relationships=edges=import/Edges.csv
+        exit from the container and restart it, then run it egain
+        bin/cypher-shell
+        user: neo4j
+        passwd: neo4j
+        new pass: biotagme
