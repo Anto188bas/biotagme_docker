@@ -16,3 +16,5 @@ Installation:
        npm install
        npm install -g laravel-echo-server
        npm run dev
+       screen
+       
