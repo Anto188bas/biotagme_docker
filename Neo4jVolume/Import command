@@ -1,0 +1,3 @@
+bin/neo4j-admin import --database='biotagme' --delimiter='\t' --nodes=import/Nodes.csv --relationships=edges=import/Edges.csv
+bin/cypher-shell
+# Then insert neo4j as user; neo4j as passw, and change passw with biotagme

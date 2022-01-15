@@ -1,0 +1,88 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      args:
+        user: antonio
+        uid:  1001
+      context: .
+      dockerfile: DockerfileApp
+    image: laravelapp
+    container_name: biotagmeApp
+    restart: unless-stopped
+    working_dir: /var/www/
+    volumes:
+      - ./Nginx/site/biotagme_laravel:/var/www
+      - ./App/uploads.ini:/usr/local/etc/php/conf.d/uploads.ini
+    ports:
+      - 6001:6001
+    networks:
+       biotagme_net:
+         ipv4_address: 192.168.21.6
+
+
+  neo4j:
+    image: 'neo4j:4.1.4-community'
+    container_name: 'neo4j'
+    restart: always
+    volumes:
+       - ./Neo4jVolume/import:/var/lib/neo4j/import:rw
+       - ./Neo4jVolume/conf:/var/lib/neo4j/conf:rw
+    networks:
+       biotagme_net:
+         ipv4_address: 192.168.21.2
+
+  redis:
+    image: 'redis'
+    container_name: 'redis'
+    restart: always
+    volumes:
+       - ./Redis/conf:/usr/local/etc/redis:rw
+    build:
+        context: .
+        dockerfile: DockerfileRedis
+    networks:
+       biotagme_net:
+         ipv4_address: 192.168.21.3
+
+  mysql:
+    image: mysql:5.7
+    container_name: biotagme_mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: 'Biotagme'
+      MYSQL_ROOT_PASSWORD: 'tagmetagme88'
+      MYSQL_PASSWORD: 'biotagme'
+      MYSQL_USER: 'biouser'
+    volumes:
+      - ./MySql/mysql_db:/var/lib/mysql
+      - ./MySql/mysql_conf/my.cnf:/etc/mysql/my.cnf
+      - ./MySql/data:/data:rw
+    networks:
+      biotagme_net:
+         ipv4_address: 192.168.21.4
+
+  nginx:
+    image: nginx:1.17-alpine
+    container_name: biotagme-nginx
+    restart: unless-stopped
+    ports:
+      - 8008:80
+    volumes:
+      - ./Nginx/site/biotagme_laravel:/var/www
+      - ./Nginx/site-available:/etc/nginx/conf.d
+    networks:
+      biotagme_net:
+         ipv4_address: 192.168.21.5
+
+
+
+networks:
+    biotagme_net:
+        driver: bridge
+        ipam:
+            driver: default
+            config:
+               - subnet: 192.168.21.0/24
+                 gateway: 192.168.21.1
