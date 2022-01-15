@@ -17,4 +17,7 @@ Installation:
        npm install -g laravel-echo-server
        npm run dev
        screen
-       
+ - exit from the previous container and access to the mysql one. then run the following command:
+        
+       cd /data
+       mysql -u biouser -p Biotagme < dump.sql
